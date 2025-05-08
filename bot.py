@@ -2,8 +2,9 @@ import telebot
 from telebot import types
 
 import config
-import data_base
+from data_base import Database
 
+Database.create_table()
 bot = telebot.TeleBot(config.token)
 
 
