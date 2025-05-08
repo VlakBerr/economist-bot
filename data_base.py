@@ -1,4 +1,5 @@
 import sqlite3
+import hashlib
 
 
 from users import User
@@ -41,3 +42,11 @@ class Database:
     def create_table():
         with open(Database.SCHEMA) as schema_file:
             Database.execute(schema_file.read())
+
+    @staticmethod
+    def find_article_by_username(id):
+        users = Database.select('SELECT * FROM users WHERE id = ?', [id])
+
+        if not users:
+            return None
+        return users[0]
