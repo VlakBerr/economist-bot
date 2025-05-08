@@ -11,7 +11,7 @@ class Database:
 
     @staticmethod
     def execute(sql, params=()):
-        connection = sqlite3.connect(Database.DB)
+        connection = sqlite3.connect(Database.DB, check_same_thread=False)
 
         cursor = connection.cursor()
 
@@ -44,9 +44,18 @@ class Database:
             Database.execute(schema_file.read())
 
     @staticmethod
-    def find_article_by_username(id):
-        users = Database.select('SELECT * FROM users WHERE id = ?', [id])
+    def find_article_by_username(username):
+        users = Database.select('SELECT * FROM users WHERE username = ?', [username])
 
         if not users:
             return None
         return users[0]
+
+    @staticmethod
+    def register(username, password):
+        if Database.find_article_by_username(username) is None:
+            hash_password = hashlib.md5(password.encode("UTF-8")).hexdigest()
+            Database.execute('INSERT INTO users (username, password) VALUES (?, ?)', [username, hash_password])
+            return True
+        else:
+            return False

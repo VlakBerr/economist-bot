@@ -61,3 +61,31 @@ def help(message):
 8. /statistics - Просмотр статистики по расходам и доходам, а также прогрессу в достижении финансовых целей.
 9. /help - Список доступных команд и описание их использования.
     ''', reply_markup=markup)
+
+
+'''
+Функция register
+'''
+@bot.message_handler(commands=['register'])
+def register_start(message):
+    markup = types.ReplyKeyboardMarkup()
+    register_btn = types.KeyboardButton('/register')
+    markup.add(register_btn)
+    bot.send_message(message.chat.id,'Введите username и пароль для регистрации через пробел')
+    bot.register_next_step_handler(message, register_finish)
+    
+def register_finish(message):
+    message_txt = message.text
+    
+    if message_txt.count(' ') == 1:
+        username, password = message_txt.split(' ')
+        if Database.register(username, password) is True:
+            Database.register(username, password)
+            bot.send_message(message.chat.id, f'Пользователь {username} успешно зарегистрирован')
+        else:
+            bot.send_message(message.chat.id,'Этот username уже занят. Попробуйте ещё раз')
+            bot.register_next_step_handler(message, register_start)
+
+    else:
+        bot.send_message(message.chat.id,'Вы допустили больше одного пробела или не поставили его. Попробуйте ещё раз')
+        bot.register_next_step_handler(message, register_start)
