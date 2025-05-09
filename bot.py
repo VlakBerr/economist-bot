@@ -7,6 +7,10 @@ from data_base import Database
 Database.create_table()
 bot = telebot.TeleBot(config.token)
 
+USER_ID = None
+def infinity_polling():
+    bot.infinity_polling()
+    USER_ID = None
 
 '''
 Функция start
@@ -89,3 +93,30 @@ def register_finish(message):
     else:
         bot.send_message(message.chat.id,'Вы допустили больше одного пробела или не поставили его. Попробуйте ещё раз')
         bot.register_next_step_handler(message, register_start)
+
+'''
+Функция login
+'''
+@bot.message_handler(commands=['login'])
+def login_start(message):
+    markup = types.ReplyKeyboardMarkup()
+    login_btn = types.KeyboardButton('/login')
+    markup.add(login_btn)
+    bot.send_message(message.chat.id,'Введите ваш username и пароль для входа через пробел')
+    bot.register_next_step_handler(message, login_finish)
+    
+def login_finish(message):
+    message_txt = message.text
+    
+    if message_txt.count(' ') == 1:
+        username, password = message_txt.split(' ')
+        if Database.login(username, password) is False:
+            bot.send_message(message.chat.id,'Неправильный username или пароль. Попробуйте ещё раз')
+            bot.register_next_step_handler(message, login_start)
+        else:
+            USER_ID = Database.login(username, password)
+            bot.send_message(message.chat.id,f'Вы успешно вошли! Здравствуйте, {username}')
+    else:
+        bot.send_message(message.chat.id,'Вы допустили больше одного пробела или не поставили его. Попробуйте ещё раз')
+        bot.register_next_step_handler(message, login_start)
+

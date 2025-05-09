@@ -27,8 +27,6 @@ class Database:
         cursor = connection.cursor()
 
         cursor.execute(sql, params)
-
-        cursor.execute(sql, params)
         
         raw_users=cursor.fetchall()
         users=[]
@@ -59,3 +57,40 @@ class Database:
             return True
         else:
             return False
+
+    #@staticmethod
+    #def login(username, password):
+    #    if Database.find_article_by_username(username) is None:
+    #        return False
+    #    else:
+    #        hash_password = hashlib.md5(password.encode("UTF-8")).hexdigest()
+    #        user = Database.select('SELECT * FROM users WHERE username = ?', [username])
+    #        password_table = user[0][2]
+    #        if hash_password == password_table:
+    #            return user[0]
+    #        else:
+    #            return False
+
+        
+    @staticmethod
+    def login(username, password):
+        if Database.find_article_by_username(username) is None:
+            return False
+        else:
+            hash_password = hashlib.md5(password.encode("UTF-8")).hexdigest()
+            
+            connection = sqlite3.connect(Database.DB)
+
+            cursor = connection.cursor()
+
+            cursor.execute('SELECT password FROM users WHERE username = ?', [username])
+        
+            password_table = cursor.fetchone()
+            password_table = password_table[0]
+
+            if hash_password == password_table:
+                cursor.execute('SELECT id FROM users WHERE username = ?', [username])
+                user_id = cursor.fetchone()
+                return user_id[0]
+            else:
+                return False
