@@ -94,3 +94,13 @@ class Database:
                 return username
             else:
                 return False
+
+    @staticmethod
+    def set_goal(title_table, price, title):
+        Database.execute(f'''
+        CREATE TABLE IF NOT EXISTS {title_table}(
+        title TEXT NOT NULL UNIQUE,
+        price TEXT NOT NULL
+        )''',[])
+        Database.execute(f'INSERT INTO {title_table} VALUES (?, ?)', [title, price])
+        return True

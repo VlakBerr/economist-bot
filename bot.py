@@ -118,3 +118,32 @@ def login_finish(message):
     else:
         bot.send_message(message.chat.id,'Вы допустили больше одного пробела или не поставили его. Попробуйте ещё раз')
         bot.register_next_step_handler(message, login_start)
+
+'''
+Функция set_goal
+'''
+@bot.message_handler(commands=['set_goal'])
+def set_goal_start(message):
+    markup = types.ReplyKeyboardMarkup()
+    set_goal_btn = types.KeyboardButton('/set_goal')
+    markup.add(set_goal_btn)
+    bot.send_message(message.chat.id,'Поставте финансовую цель: указанием сумму и описание через пробел')
+    bot.register_next_step_handler(message, set_goal_finish)
+    
+def set_goal_finish(message):
+    global USERNAME
+    
+    if USERNAME is not None:
+        message_txt = message.text
+
+        if message_txt.count(' ') == 1:
+            price, title = message_txt.split(' ')
+            Database.set_goal(USERNAME, title, price)
+            bot.send_message(message.chat.id,'Новая цель успешно установлена')
+        else:
+            bot.send_message(message.chat.id,'Вы допустили больше одного пробела или не поставили его. Попробуйте ещё раз')
+            bot.register_next_step_handler(message, set_goal_start)
+
+    else:
+        bot.send_message(message.chat.id,'Вы не вошли в аккаунт. Войдите и попробуйте ещё раз')
+        bot.register_next_step_handler(message, login_start)
