@@ -91,6 +91,6 @@ class Database:
             if hash_password == password_table:
                 cursor.execute('SELECT id FROM users WHERE username = ?', [username])
                 user_id = cursor.fetchone()
-                return user_id[0]
+                return username
             else:
                 return False
