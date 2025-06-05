@@ -114,7 +114,7 @@ def login_finish(message):
             bot.register_next_step_handler(message, login_start)
         else:
             USERNAME = Database.login(username, password)
-            bot.send_message(message.chat.id,f'Вы успешно вошли! Здравствуйте, {username}, {USERNAME}')
+            bot.send_message(message.chat.id,f'Вы успешно вошли! Здравствуйте, {username}')
     else:
         bot.send_message(message.chat.id,'Вы допустили больше одного пробела или не поставили его. Попробуйте ещё раз')
         bot.register_next_step_handler(message, login_start)
