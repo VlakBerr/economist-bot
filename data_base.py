@@ -100,7 +100,8 @@ class Database:
         Database.execute(f'''
         CREATE TABLE IF NOT EXISTS {title_table}(
         title TEXT NOT NULL UNIQUE,
-        price TEXT NOT NULL
+        price TEXT NOT NULL,
+        savings TEXT NOT NULL DEFAULT '0'
         )''',[])
-        Database.execute(f'INSERT INTO {title_table} VALUES (?, ?)', [title, price])
+        Database.execute(f'INSERT INTO {title_table} (title, price) VALUES (?, ?)', [title, price])
         return True
