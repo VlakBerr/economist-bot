@@ -50,6 +50,16 @@ class Database:
         return users[0]
 
     @staticmethod
+    def find_title_in_tables_with_name_USERNAME(title_table, title):
+        title = Database.select(f'SELECT * FROM {title_table} WHERE title = ?', [title])
+
+        if title is None:
+            return False
+        else:
+            return True
+
+
+    @staticmethod
     def register(username, password):
         if Database.find_article_by_username(username) is None:
             hash_password = hashlib.md5(password.encode("UTF-8")).hexdigest()
@@ -105,3 +115,21 @@ class Database:
         )''',[])
         Database.execute(f'INSERT INTO {title_table} (title, price) VALUES (?, ?)', [title, price])
         return True
+
+    @staticmethod
+    def add_income(title_table, title, income):
+        connection = sqlite3.connect(Database.DB)
+        cursor = connection.cursor()
+        cursor.execute(f'SELECT savings FROM {title_table} WHERE title = ?', [title])        
+        price_before = int(cursor.fetchall()[0][0])
+        cursor.execute(f'SELECT price FROM {title_table} WHERE title = ?', [title])        
+        goal_price = int(cursor.fetchall()[0][0])
+
+        price_after = price_before + income 
+        Database.execute(f'''
+        UPDATE {title_table} SET savings = ? WHERE title = ? ''', [price_after, title])
+
+        if price_after >= goal_price:
+            return True
+        else:
+            return price_after, goal_price - price_after
