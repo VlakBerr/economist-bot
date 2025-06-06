@@ -175,7 +175,7 @@ def add_income_finish(message):
                 price_after, save = None, None
                 price_after, save = Database.add_income(USERNAME, title, int(income))
                 if price_after is None or save is None:
-                    bot.send_message(message.chat.id,'Поздравляю! Вы накопили на свою цель!!!')
+                    bot.send_message(message.chat.id,f'Поздравляю! Вы накопили на свою цель!!! Вы внесли сверх {save}')
                 else:
                     bot.send_message(message.chat.id,f'Молодцы! Вы внесли уже {price_after}. Вам осталось накопить {save}')
 

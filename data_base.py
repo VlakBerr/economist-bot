@@ -130,6 +130,6 @@ class Database:
         UPDATE {title_table} SET savings = ? WHERE title = ? ''', [price_after, title])
 
         if price_after >= goal_price:
-            return True
+            return None, price_after - goal_price 
         else:
             return price_after, goal_price - price_after
