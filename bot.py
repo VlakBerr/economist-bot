@@ -190,3 +190,42 @@ def add_income_finish(message):
     else:
         bot.send_message(message.chat.id,'Вы не вошли в аккаунт. Войдите и попробуйте ещё раз')
         bot.register_next_step_handler(message, login_start)
+
+'''
+Функция add_expense
+'''
+@bot.message_handler(commands=['add_expense'])
+def add_expense_start(message):
+    markup = types.ReplyKeyboardMarkup()
+    add_expense_btn = types.KeyboardButton('/add_expense')
+    markup.add(add_expense_btn)
+    bot.send_message(message.chat.id,'Добавте расход с указанием категории и суммы через пробел')
+    bot.register_next_step_handler(message, add_expense_finish)
+    
+def add_expense_finish(message):
+    global USERNAME
+    
+    if USERNAME is not None:
+        message_txt = message.text
+
+        if message_txt.count(' ') == 1:
+            title, income = message_txt.split(' ')
+            if income.isdigit() is False:
+                bot.send_message(message.chat.id,'Вы не ввели сумму. Попробуйте ещё раз')
+                bot.register_next_step_handler(message, add_expense_start)
+        
+            if Database.find_title_in_tables_with_name_USERNAME(USERNAME, title) is True:
+                price_after, save = Database.add_expense(USERNAME, title, int(income))
+                bot.send_message(message.chat.id,f'Вы уже внесли на цель {price_after} с учётом расхода. Вам осталось накопить {save}')
+
+            if Database.find_title_in_tables_with_name_USERNAME(USERNAME, title) is False:
+                bot.send_message(message.chat.id,'Категория неправильно указано. Попробуйте ещё раз')
+                bot.register_next_step_handler(message, add_expense_start)
+        
+        else:
+            bot.send_message(message.chat.id,'Вы допустили больше одного пробела или не поставили его. Попробуйте ещё раз')
+            bot.register_next_step_handler(message, add_expense_start)
+
+    else:
+        bot.send_message(message.chat.id,'Вы не вошли в аккаунт. Войдите и попробуйте ещё раз')
+        bot.register_next_step_handler(message, login_start)

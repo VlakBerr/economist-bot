@@ -133,3 +133,18 @@ class Database:
             return None, price_after - goal_price 
         else:
             return price_after, goal_price - price_after
+
+    @staticmethod
+    def add_expense(title_table, title, income):
+        connection = sqlite3.connect(Database.DB)
+        cursor = connection.cursor()
+        cursor.execute(f'SELECT savings FROM {title_table} WHERE title = ?', [title])        
+        price_before = int(cursor.fetchall()[0][0])
+        cursor.execute(f'SELECT price FROM {title_table} WHERE title = ?', [title])        
+        goal_price = int(cursor.fetchall()[0][0])
+
+        price_after = price_before - income 
+        Database.execute(f'''
+        UPDATE {title_table} SET savings = ? WHERE title = ? ''', [price_after, title])
+
+        return price_after, goal_price - price_after
