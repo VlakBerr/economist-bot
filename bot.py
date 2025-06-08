@@ -129,7 +129,7 @@ def set_goal_start(message):
     markup = types.ReplyKeyboardMarkup()
     set_goal_btn = types.KeyboardButton('/set_goal')
     markup.add(set_goal_btn)
-    bot.send_message(message.chat.id,'Поставте финансовую цель: указанием сумму и описание через пробел')
+    bot.send_message(message.chat.id,'Поставте финансовую цель: напишите название и цену через пробел')
     bot.register_next_step_handler(message, set_goal_finish)
     
 def set_goal_finish(message):
