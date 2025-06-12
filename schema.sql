@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS incomes(
    user_id INTEGER NOT NULL,
    title TEXT NOT NULL,       
    income TEXT NOT NULL,
+   created_at DATETIME NOT NULL DEFAULT current_timestamp,
    FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
