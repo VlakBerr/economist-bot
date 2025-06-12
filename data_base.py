@@ -2,7 +2,7 @@ import sqlite3
 import hashlib
 
 
-from users import User
+from users import User, Income, Expense, Goal
 
 
 class Database:
@@ -39,7 +39,13 @@ class Database:
     @staticmethod
     def create_table():
         with open(Database.SCHEMA) as schema_file:
-            Database.execute(schema_file.read())
+            connection = sqlite3.connect(Database.DB)
+            cursor = connection.cursor()
+            cursor.executescript(schema_file.read())
+            connection.commit()
+            connection.close()
+
+
 
     @staticmethod
     def find_article_by_username(username):
