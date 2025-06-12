@@ -56,10 +56,12 @@ class Database:
         return users[0]
 
     @staticmethod
-    def find_title_in_tables_with_name_USERNAME(title_table, title):
-        title = Database.select(f'SELECT * FROM {title_table} WHERE title = ?', [title])
-
-        if title is None:
+    def find_title_in_tables_goal_with_user_id(user_id, title):
+        connection = sqlite3.connect(Database.DB)
+        cursor = connection.cursor()
+        cursor.execute('SELECT money_count FROM goals WHERE user_id = ? AND title = ?', [user_id, title])
+        money_count = cursor.fetchall()
+        if len(money_count) == 0:
             return False
         else:
             return True
@@ -160,3 +162,23 @@ class Database:
         Database.execute('INSERT INTO goals (user_id, title, money_count) VALUES (?, ?, ?)', 
         [user_id, title, money_count])
         return True
+
+    @staticmethod
+    def add_income(user_id, title, income):
+        Database.execute('INSERT INTO incomes (user_id, title, income) VALUES (?, ?, ?)', 
+        [user_id, title, income])
+        
+        connection = sqlite3.connect(Database.DB)
+        cursor = connection.cursor()
+        cursor.execute('SELECT savings FROM goals WHERE title = ?', [title])        
+        price_before = int(cursor.fetchall()[0][0])
+        cursor.execute('SELECT money_count FROM goals WHERE title = ?', [title])        
+        money_count = int(cursor.fetchall()[0][0])
+
+        price_after = price_before + income 
+        Database.execute('UPDATE goals SET savings = ? WHERE title = ? ', [price_after, title])
+
+        if price_after >= money_count:
+            return None, price_after - money_count 
+        else:
+            return price_after, money_count - price_after

@@ -265,3 +265,46 @@ def set_goal_finish(message):
     else:
         bot.send_message(message.chat.id,'Вы не вошли в аккаунт. Войдите и попробуйте ещё раз')
         bot.register_next_step_handler(message, login_start)
+
+'''
+Функция add_income
+'''
+@bot.message_handler(commands=['add_income'])
+def add_income_start(message):
+    markup = types.ReplyKeyboardMarkup()
+    add_income_btn = types.KeyboardButton('/add_income')
+    markup.add(add_income_btn)
+    bot.send_message(message.chat.id,'Добавте доход с указанием категории и суммы через пробел')
+    bot.register_next_step_handler(message, add_income_finish)
+    
+def add_income_finish(message):
+    global USER_ID
+    
+    if USER_ID is not None:
+        message_txt = message.text
+
+        if message_txt.count(' ') == 1:
+            title, income = message_txt.split(' ')
+            if income.isdigit() is False:
+                bot.send_message(message.chat.id,'Вы не ввели сумму. Попробуйте ещё раз')
+                bot.register_next_step_handler(message, add_income_start)
+            else:
+                if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is True:
+                    price_after, save = None, None
+                    price_after, save = Database.add_income(USER_ID, title, int(income))
+                    if price_after is None or save is None:
+                        bot.send_message(message.chat.id,f'Поздравляю! Вы накопили на свою цель!!! Вы внесли сверх {save}')
+                    else:
+                        bot.send_message(message.chat.id,f'Молодцы! Вы внесли уже {price_after}. Вам осталось накопить {save}')
+
+                if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is False:
+                    bot.send_message(message.chat.id,'Категория неправильно указано. Попробуйте ещё раз')
+                    bot.register_next_step_handler(message, add_income_start)
+
+        else:
+            bot.send_message(message.chat.id,'Вы допустили больше одного пробела или не поставили его. Попробуйте ещё раз')
+            bot.register_next_step_handler(message, add_income_start)
+
+    else:
+        bot.send_message(message.chat.id,'Вы не вошли в аккаунт. Войдите и попробуйте ещё раз')
+        bot.register_next_step_handler(message, login_start)
