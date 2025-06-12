@@ -24,6 +24,6 @@ CREATE TABLE IF NOT EXISTS goals (
    user_id INTEGER NOT NULL,
    title TEXT NOT NULL UNIQUE,
    money_count TEXT NOT NULL,
-   savings TEXT NOT NULL,
+   savings TEXT NOT NULL DEFAULT '0',
    FOREIGN KEY (user_id) REFERENCES users (id)
 )
