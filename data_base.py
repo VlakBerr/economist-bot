@@ -46,6 +46,17 @@ class Database:
             connection.close()
 
 
+    @staticmethod
+    def check_goal_in_table_by_id(user_id, title):
+        connection = sqlite3.connect(Database.DB)
+        cursor = connection.cursor()
+        cursor.execute('SELECT * FROM goals WHERE user_id = ? AND title = ?', [user_id, title])
+        goal = cursor.fetchall()
+        if len(goal) == 0:
+            return True
+        else:
+            return False
+
 
     @staticmethod
     def find_article_by_username(username):
@@ -199,3 +210,11 @@ class Database:
         Database.execute('UPDATE goals SET savings = ? WHERE title = ? AND user_id = ? ', [price_after, title, user_id])
 
         return price_after, money_count - price_after
+
+
+
+
+'''
+во время установки цели нужно проверять по id и title есть ли уже такак цель
+тогда можно избежать недочётов
+'''

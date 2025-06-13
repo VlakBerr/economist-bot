@@ -256,8 +256,12 @@ def set_goal_finish(message):
                 bot.send_message(message.chat.id,'Вы не ввели сумму. Попробуйте ещё раз')
                 bot.register_next_step_handler(message, set_goal_start)
             else:
-                Database.set_goal(USER_ID, title, money_count)
-                bot.send_message(message.chat.id,'Новая цель успешно установлена')
+                if Database.check_goal_in_table_by_id(USER_ID, title) is True:
+                    Database.set_goal(USER_ID, title, money_count)
+                    bot.send_message(message.chat.id,'Новая цель успешно установлена')
+                else:
+                    bot.send_message(message.chat.id,'Такая цель уже есть. Попробуйте ещё раз')
+                    bot.register_next_step_handler(message, set_goal_start)
         else:
             bot.send_message(message.chat.id,'Вы допустили больше одного пробела или не поставили его. Попробуйте ещё раз')
             bot.register_next_step_handler(message, set_goal_start)
