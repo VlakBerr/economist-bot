@@ -86,20 +86,6 @@ class Database:
             return True
         else:
             return False
-
-    #@staticmethod
-    #def login(username, password):
-    #    if Database.find_article_by_username(username) is None:
-    #        return False
-    #    else:
-    #        hash_password = hashlib.md5(password.encode("UTF-8")).hexdigest()
-    #        user = Database.select('SELECT * FROM users WHERE username = ?', [username])
-    #        password_table = user[0][2]
-    #        if hash_password == password_table:
-    #            return user[0]
-    #        else:
-    #            return False
-
         
     @staticmethod
     def login(username, password):
