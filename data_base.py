@@ -182,3 +182,20 @@ class Database:
             return None, price_after - money_count 
         else:
             return price_after, money_count - price_after
+
+    @staticmethod
+    def add_expense(user_id, title, expense):
+        Database.execute('INSERT INTO expenses (user_id, title, expense) VALUES (?, ?, ?)', 
+        [user_id, title, expense])
+        
+        connection = sqlite3.connect(Database.DB)
+        cursor = connection.cursor()
+        cursor.execute('SELECT savings FROM goals WHERE title = ?', [title])        
+        price_before = int(cursor.fetchall()[0][0])
+        cursor.execute('SELECT money_count FROM goals WHERE title = ?', [title])        
+        money_count = int(cursor.fetchall()[0][0])
+
+        price_after = price_before - expense 
+        Database.execute('UPDATE goals SET savings = ? WHERE title = ? AND user_id = ? ', [price_after, title, user_id])
+
+        return price_after, money_count - price_after
