@@ -124,50 +124,6 @@ class Database:
             else:
                 return False
 
-    #@staticmethod
-    #def set_goal(title_table, price, title):
-    #    Database.execute(f'''
-    #    CREATE TABLE IF NOT EXISTS {title_table}(
-    #    title TEXT NOT NULL UNIQUE,
-    #    price TEXT NOT NULL,
-    #    savings TEXT NOT NULL DEFAULT '0'
-    #    )''',[])
-    #    Database.execute(f'INSERT INTO {title_table} (title, price) VALUES (?, ?)', [title, price])
-    #    return True
-#
-    #@staticmethod
-    #def add_income(title_table, title, income):
-    #    connection = sqlite3.connect(Database.DB)
-    #    cursor = connection.cursor()
-    #    cursor.execute(f'SELECT savings FROM {title_table} WHERE title = ?', [title])        
-    #    price_before = int(cursor.fetchall()[0][0])
-    #    cursor.execute(f'SELECT price FROM {title_table} WHERE title = ?', [title])        
-    #    goal_price = int(cursor.fetchall()[0][0])
-#
-    #    price_after = price_before + income 
-    #    Database.execute(f'''
-    #    UPDATE {title_table} SET savings = ? WHERE title = ? ''', [price_after, title])
-#
-    #    if price_after >= goal_price:
-    #        return None, price_after - goal_price 
-    #    else:
-    #        return price_after, goal_price - price_after
-#
-    #@staticmethod
-    #def add_expense(title_table, title, income):
-    #    connection = sqlite3.connect(Database.DB)
-    #    cursor = connection.cursor()
-    #    cursor.execute(f'SELECT savings FROM {title_table} WHERE title = ?', [title])        
-    #    price_before = int(cursor.fetchall()[0][0])
-    #    cursor.execute(f'SELECT price FROM {title_table} WHERE title = ?', [title])        
-    #    goal_price = int(cursor.fetchall()[0][0])
-#
-    #    price_after = price_before - income 
-    #    Database.execute(f'''
-    #    UPDATE {title_table} SET savings = ? WHERE title = ? ''', [price_after, title])
-#
-    #    return price_after, goal_price - price_after
-
     @staticmethod
     def set_goal(user_id, title, money_count):
         Database.execute('INSERT INTO goals (user_id, title, money_count) VALUES (?, ?, ?)', 
@@ -210,11 +166,3 @@ class Database:
         Database.execute('UPDATE goals SET savings = ? WHERE title = ? AND user_id = ? ', [price_after, title, user_id])
 
         return price_after, money_count - price_after
-
-
-
-
-'''
-во время установки цели нужно проверять по id и title есть ли уже такак цель
-тогда можно избежать недочётов
-'''
