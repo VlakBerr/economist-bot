@@ -239,3 +239,72 @@ def add_expense_finish(message):
     else:
         bot.send_message(message.chat.id,'Вы не вошли в аккаунт. Войдите и попробуйте ещё раз')
         bot.register_next_step_handler(message, login_start)
+
+'''
+Функция view_transactions
+'''
+@bot.message_handler(commands=['view_transactions'])
+def view_transactions_start(message):
+    markup = types.ReplyKeyboardMarkup()
+    view_transactions_btn = types.KeyboardButton('/view_transactions')
+    markup.add(view_transactions_btn)
+    bot.send_message(message.chat.id,'Введите какую-либо категорию, стобы посмотреть по ней транзакции. Если вы хотите посмотерть транзакции за всё время, наберите "Все"!')
+    bot.register_next_step_handler(message, view_transactions_finish)
+    
+def view_transactions_finish(message):
+    global USER_ID
+    
+    if USER_ID is not None:
+        message_txt = message.text
+
+        if message_txt.count(' ') == 0:
+            title = message_txt
+            
+            if title == 'Все':
+                incomes = Database.view_transactions_incomes(USER_ID, None)
+                expenses = Database.view_transactions_expenses(USER_ID, None)
+                if incomes is None:
+                    bot.send_message(message.chat.id, f'У вас доходов нет')
+                else:
+                    for income in incomes:
+                        user_id, title, income, created_at = income
+                        bot.send_message(message.chat.id, f'ДОХОД: название: {title}, внесение: {income}, время и дата: {created_at}')
+                
+                if expenses is None:
+                    bot.send_message(message.chat.id, f'У вас росходов нет')
+                else:
+                    for expense in expenses:
+                        user_id, title, expense, created_at = expense
+                        bot.send_message(message.chat.id, f'Расход: название: {title}, внесение: {expense}, время и дата: {created_at}')    
+            else:
+                if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is True:
+                    incomes = Database.view_transactions_incomes(USER_ID, title)
+                    expenses = Database.view_transactions_expenses(USER_ID, title)
+                    if incomes is None:
+                        bot.send_message(message.chat.id, f'Доходов на эту категорию нет')
+                    else:
+                        for income in incomes:
+                            user_id, title, income, created_at = income
+                            bot.send_message(message.chat.id, f'ДОХОД: название: {title}, внесение: {income}, время и дата: {created_at}')
+
+                    if expenses is None:
+                        bot.send_message(message.chat.id, f'Расходов на эту категорию нет')
+                    else:
+                        for expense in expenses:
+                            user_id, title, expense, created_at = expense
+                            bot.send_message(message.chat.id, f'Расход: название: {title}, внесение: {expense}, время и дата: {created_at}')    
+
+                if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is False:
+                    bot.send_message(message.chat.id,'Категория неправильно указано. Попробуйте ещё раз')
+                    bot.register_next_step_handler(message, view_transactions_start)
+        
+        else:
+            bot.send_message(message.chat.id,'Нужно ввсети только одно слово. Попробуйте ещё раз')
+            bot.register_next_step_handler(message, view_transactions_start)
+
+    else:
+        bot.send_message(message.chat.id,'Вы не вошли в аккаунт. Войдите и попробуйте ещё раз')
+        bot.register_next_step_handler(message, login_start)
+
+
+bot.infinity_polling()

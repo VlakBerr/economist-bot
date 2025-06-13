@@ -152,3 +152,37 @@ class Database:
         Database.execute('UPDATE goals SET savings = ? WHERE title = ? AND user_id = ? ', [price_after, title, user_id])
 
         return price_after, money_count - price_after
+
+    @staticmethod
+    def view_transactions_incomes(user_id, title):
+        if title is None:
+            connection = sqlite3.connect(Database.DB)
+            cursor = connection.cursor()
+            cursor.execute('SELECT * FROM incomes WHERE user_id = ?', [user_id])
+            incomes = list(cursor.fetchall())
+        else:
+            connection = sqlite3.connect(Database.DB)
+            cursor = connection.cursor()
+            cursor.execute('SELECT * FROM incomes WHERE user_id = ? AND title = ?', [user_id, title])
+            incomes = list(cursor.fetchall())
+
+        if len(incomes) == 0:
+            return None
+        return incomes
+
+    @staticmethod
+    def view_transactions_expenses(user_id, title):
+        if title is None:
+            connection = sqlite3.connect(Database.DB)
+            cursor = connection.cursor()
+            cursor.execute('SELECT * FROM expenses WHERE user_id = ?', [user_id])
+            expenses = list(cursor.fetchall())
+        else:
+            connection = sqlite3.connect(Database.DB)
+            cursor = connection.cursor()
+            cursor.execute('SELECT * FROM expenses WHERE user_id = ? AND title = ?', [user_id, title])
+            expenses = list(cursor.fetchall())
+
+        if len(expenses) == 0:
+            return None
+        return expenses
