@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS incomes(
    user_id INTEGER NOT NULL,
    title TEXT NOT NULL,       
    income TEXT NOT NULL,
-   created_at DATETIME NOT NULL DEFAULT current_timestamp,
+   created_at DATETIME NOT NULL DEFAULT (datetime('now', '+3 hours')),
    FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS expenses(
    user_id INTEGER NOT NULL,
    title TEXT NOT NULL,       
    expense TEXT NOT NULL,
-   created_at DATETIME NOT NULL DEFAULT current_timestamp,
+   created_at DATETIME NOT NULL DEFAULT (datetime('now', '+3 hours')),
    FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
