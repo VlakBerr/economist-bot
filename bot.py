@@ -275,7 +275,7 @@ def view_transactions_finish(message):
                 else:
                     for expense in expenses:
                         user_id, title, expense, created_at = expense
-                        bot.send_message(message.chat.id, f'Расход: название: {title}, внесение: {expense}, время и дата: {created_at}')    
+                        bot.send_message(message.chat.id, f'Расход: название: {title}, снятие: {expense}, время и дата: {created_at}')    
             else:
                 if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is True:
                     incomes = Database.view_transactions_incomes(USER_ID, title)
@@ -292,7 +292,7 @@ def view_transactions_finish(message):
                     else:
                         for expense in expenses:
                             user_id, title, expense, created_at = expense
-                            bot.send_message(message.chat.id, f'Расход: название: {title}, внесение: {expense}, время и дата: {created_at}')    
+                            bot.send_message(message.chat.id, f'Расход: название: {title}, снятие: {expense}, время и дата: {created_at}')    
 
                 if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is False:
                     bot.send_message(message.chat.id,'Категория неправильно указано. Попробуйте ещё раз')
