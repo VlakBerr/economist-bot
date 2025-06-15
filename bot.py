@@ -370,7 +370,3 @@ def statistics_finish(message):
     else:
         bot.send_message(message.chat.id,'Вы не вошли в аккаунт. Войдите и попробуйте ещё раз')
         bot.register_next_step_handler(message, login_start)
-        
-
-bot.infinity_polling()
-    
