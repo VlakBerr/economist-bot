@@ -1,6 +1,8 @@
 import sqlite3
 import hashlib
-
+import matplotlib.pyplot as plt
+import numpy as np
+import os
 
 from users import User, Income, Expense, Goal
 
@@ -186,3 +188,73 @@ class Database:
         if len(expenses) == 0:
             return None
         return expenses
+
+    @staticmethod
+    def delete_files_in_folder(folder_path):
+            for filename in os.listdir(folder_path):
+                file_path = os.path.join(folder_path, filename)
+                try:
+                    if os.path.isfile(file_path):
+                        os.remove(file_path)
+                except Exception as e:
+                    print(f'Ошибка при удалении файла {file_path}. {e}')
+
+    @staticmethod
+    def statistics(user_id, title):
+        if title is None:
+            connection = sqlite3.connect(Database.DB)
+            cursor = connection.cursor()
+            cursor.execute('SELECT income FROM incomes WHERE user_id = ?', [user_id])
+            incomes = list(cursor.fetchall())
+            incomes_all = 0
+            cursor.execute('SELECT expense FROM expenses WHERE user_id = ?', [user_id])
+            expenses = list(cursor.fetchall())
+            expenses_all = 0
+
+            for i in range(len(incomes)):
+                incomes_all += int(incomes[i][0])
+            for i in range(len(expenses)):
+                expenses_all += int(expenses[i][0])
+        
+        else:
+            connection = sqlite3.connect(Database.DB)
+            cursor = connection.cursor()
+            cursor.execute('SELECT income FROM incomes WHERE user_id = ? AND title = ?', [user_id, title])
+            incomes = list(cursor.fetchall())
+            incomes_all = 0
+            cursor.execute('SELECT expense FROM expenses WHERE user_id = ? AND title = ?', [user_id, title])
+            expenses = list(cursor.fetchall())
+            expenses_all = 0
+
+            for i in range(len(incomes)):
+                incomes_all += int(incomes[i][0])
+            for i in range(len(expenses)):
+                expenses_all += int(expenses[i][0])
+            
+        columns = {
+        "Income": incomes_all,
+        "Expense": expenses_all,
+        }
+
+        transactions = list(columns.keys())
+        values = list(columns.values())
+
+        fig, ax = plt.subplots()
+        bars = ax.bar(transactions, values)
+
+        for bar, transaction in zip(bars, transactions):
+            if transaction == 'Expense':
+                bar.set_color('orange')  
+            else:
+                bar.set_color('blue')  
+        
+        ax.set_title("Statistics")
+        ax.set_xlabel("Incomes and Expenses")
+        ax.set_ylabel("Values")
+
+        path = "download_graficks"
+        Database.delete_files_in_folder(path)
+        plt.savefig("download_graficks/grafick.jpg")
+        path = os.path.abspath("download_graficks/grafick.jpg")
+
+        return incomes_all, expenses_all

@@ -305,3 +305,72 @@ def view_transactions_finish(message):
     else:
         bot.send_message(message.chat.id,'Вы не вошли в аккаунт. Войдите и попробуйте ещё раз')
         bot.register_next_step_handler(message, login_start)
+
+'''
+Функция statistics
+'''
+@bot.message_handler(commands=['statistics'])
+def statistics_start(message):
+    markup = types.ReplyKeyboardMarkup()
+    statistics_btn = types.KeyboardButton('/statistics')
+    markup.add(statistics_btn)
+    bot.send_message(message.chat.id,'...')
+    bot.register_next_step_handler(message, statistics_finish)
+    
+def statistics_finish(message):
+    global USER_ID
+    
+    if USER_ID is not None:
+        message_txt = message.text
+
+        if message_txt.count(' ') == 0:
+            title = message_txt
+            
+            if title == 'Все':
+                incomes, expenses = Database.statistics(USER_ID, None)
+
+                if incomes is None:
+                    bot.send_message(message.chat.id, f'У вас доходов нет')
+                else:
+                    bot.send_message(message.chat.id, f'Общие внесение: {incomes}')
+                
+                if expenses is None:
+                    bot.send_message(message.chat.id, f'У вас росходов нет')
+                else:
+                   bot.send_message(message.chat.id, f'Общие траты: {expenses}')
+
+                with open("download_graficks/grafick.jpg", 'rb') as photo:
+                    bot.send_photo(message.chat.id, photo)
+                
+            else:
+                if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is True:
+                    incomes, expenses = Database.statistics(USER_ID, title)
+
+                    if incomes is None:
+                        bot.send_message(message.chat.id, f'У вас доходов нет на категорию {title}')
+                    else:
+                        bot.send_message(message.chat.id, f'Общие внесение на категорию {title}: {incomes}')
+
+                    if expenses is None:
+                        bot.send_message(message.chat.id, f'У вас росходов нет на категорию {title}')
+                    else:
+                        bot.send_message(message.chat.id, f'Общие траты на категорию {title}: {expenses}')
+
+                    with open("download_graficks/grafick.jpg", 'rb') as photo:
+                        bot.send_photo(message.chat.id, photo)
+
+                if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is False:
+                    bot.send_message(message.chat.id,'Категория неправильно указано. Попробуйте ещё раз')
+                    bot.register_next_step_handler(message, statistics_start)
+
+        else:
+            bot.send_message(message.chat.id,'Нужно ввсети только одно слово. Попробуйте ещё раз')
+            bot.register_next_step_handler(message, statistics_start)
+
+    else:
+        bot.send_message(message.chat.id,'Вы не вошли в аккаунт. Войдите и попробуйте ещё раз')
+        bot.register_next_step_handler(message, login_start)
+        
+
+bot.infinity_polling()
+    
