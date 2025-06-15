@@ -34,3 +34,37 @@
 | `/statistics` | Статистика и прогресс по целям |
 | `/help` | Список всех команд |
 
+
+## Инструкция по установке
+
+1. Клонируйте репозиторий:
+    ```bash
+    git clone https://github.com/VlakBerr/economist-bot.git
+    ```
+
+2. Установите необходимые библиотеки:
+    ```bash
+    pip install pyTelegramBotAPI
+    pip install matplotlib
+    ```
+
+3. Создайте следующие файлы в корневой директории проекта:
+    - `config.py`
+    - `database.db`
+
+4. В файле `config.py` создайте переменную `token` и присвойте ей токен вашего Telegram-бота. Например:
+    ```python
+    token = 'YOUR_TELEGRAM_BOT_TOKEN'
+    ```
+
+5. В файле `bot.py` добавьте в конце строку:
+    ```python
+    bot.infinity_polling()
+    ```
+
+6. Запустите бота командой:
+    ```bash
+    python bot.py
+    ```
+
+После выполнения этих шагов бот будет готов к работе и вы сможете использовать Telegram-бота для управления личными финансами.
