@@ -191,13 +191,10 @@ class Database:
 
     @staticmethod
     def delete_files_in_folder(folder_path):
-            for filename in os.listdir(folder_path):
-                file_path = os.path.join(folder_path, filename)
-                try:
-                    if os.path.isfile(file_path):
-                        os.remove(file_path)
-                except Exception as e:
-                    print(f'Ошибка при удалении файла {file_path}. {e}')
+            for file_name in os.listdir(folder_path):  
+                file_path = os.path.join(folder_path, file_name)  
+                if os.path.isfile(file_path):  
+                    os.remove(file_path)
 
     @staticmethod
     def statistics(user_id, title):
@@ -239,8 +236,12 @@ class Database:
         transactions = list(columns.keys())
         values = list(columns.values())
 
-        fig, ax = plt.subplots()
-        bars = ax.bar(transactions, values)
+        fig, ax = plt.subplots(figsize=(4, 5))
+        bars = ax.bar(transactions, values, width=0.3)
+        x_pos = [0, 1]
+
+        ax.set_xticks(x_pos)
+        ax.set_xticklabels(transactions)
 
         for bar, transaction in zip(bars, transactions):
             if transaction == 'Expense':
@@ -253,8 +254,6 @@ class Database:
         ax.set_ylabel("Values")
 
         path = "download_graficks"
-        Database.delete_files_in_folder(path)
         plt.savefig("download_graficks/grafick.jpg")
-        path = os.path.abspath("download_graficks/grafick.jpg")
-
-        return incomes_all, expenses_all
+        
+        return incomes_all, expenses_all, path

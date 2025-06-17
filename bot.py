@@ -345,7 +345,7 @@ def statistics_finish(message):
             title = message_txt
             
             if title == 'Все':
-                incomes, expenses = Database.statistics(USER_ID, None)
+                incomes, expenses, path = Database.statistics(USER_ID, None)
 
                 if incomes is None:
                     bot.send_message(message.chat.id, f'У вас доходов нет')
@@ -357,12 +357,13 @@ def statistics_finish(message):
                 else:
                    bot.send_message(message.chat.id, f'Общие траты: {expenses}')
 
-                with open("download_graficks/grafick.jpg", 'rb') as photo:
-                    bot.send_photo(message.chat.id, photo)
-                
+                photo = open("download_graficks/grafick.jpg", 'rb')
+                bot.send_photo(message.chat.id, photo)
+                photo.close()
+                Database.delete_files_in_folder(path)
             else:
                 if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is True:
-                    incomes, expenses = Database.statistics(USER_ID, title)
+                    incomes, expenses, path = Database.statistics(USER_ID, title)
 
                     if incomes is None:
                         bot.send_message(message.chat.id, f'У вас доходов нет на категорию {title}')
@@ -374,8 +375,10 @@ def statistics_finish(message):
                     else:
                         bot.send_message(message.chat.id, f'Общие траты на категорию {title}: {expenses}')
 
-                    with open("download_graficks/grafick.jpg", 'rb') as photo:
-                        bot.send_photo(message.chat.id, photo)
+                    photo = open("download_graficks/grafick.jpg", 'rb')
+                    bot.send_photo(message.chat.id, photo)
+                    photo.close()
+                    Database.delete_files_in_folder(path)
 
                 if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is False:
                     bot.send_message(message.chat.id,'Категория неправильно указано. Попробуйте ещё раз')
@@ -391,3 +394,6 @@ def statistics_finish(message):
         bot.send_message(message.chat.id,'Вы не вошли в аккаунт. Войдите и попробуйте ещё раз')
         login_start(message)
         return
+
+
+bot.infinity_polling()
