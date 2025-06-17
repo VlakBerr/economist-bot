@@ -332,7 +332,7 @@ def statistics_start(message):
     markup = types.ReplyKeyboardMarkup()
     statistics_btn = types.KeyboardButton('/statistics')
     markup.add(statistics_btn)
-    bot.send_message(message.chat.id,'...')
+    bot.send_message(message.chat.id,'Введите какую-либо категорию, чтобы посмотреть по ней сумму ввода и вывода. Если вы хотите посмотерть сумму ввода и вывода за всё время, наберите "Все"!')
     bot.register_next_step_handler(message, statistics_finish)
     
 def statistics_finish(message):
