@@ -263,7 +263,7 @@ def view_transactions_start(message):
     markup = types.ReplyKeyboardMarkup()
     view_transactions_btn = types.KeyboardButton('/view_transactions')
     markup.add(view_transactions_btn)
-    bot.send_message(message.chat.id,'Введите какую-либо категорию, стобы посмотреть по ней транзакции. Если вы хотите посмотерть транзакции за всё время, наберите "Все"!')
+    bot.send_message(message.chat.id,'Введите какую-либо категорию, чтобы посмотреть по ней транзакции. Если вы хотите посмотерть транзакции за всё время, наберите "Все"!')
     bot.register_next_step_handler(message, view_transactions_finish)
     
 def view_transactions_finish(message):
@@ -290,7 +290,7 @@ def view_transactions_finish(message):
                 else:
                     for expense in expenses:
                         user_id, title, expense, created_at = expense
-                        bot.send_message(message.chat.id, f'Расход: название: {title}, снятие: {expense}, время и дата: {created_at}')    
+                        bot.send_message(message.chat.id, f'РАСХОД: название: {title}, снятие: {expense}, время и дата: {created_at}')    
             else:
                 if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is True:
                     incomes = Database.view_transactions_incomes(USER_ID, title)
@@ -307,7 +307,7 @@ def view_transactions_finish(message):
                     else:
                         for expense in expenses:
                             user_id, title, expense, created_at = expense
-                            bot.send_message(message.chat.id, f'Расход: название: {title}, снятие: {expense}, время и дата: {created_at}')    
+                            bot.send_message(message.chat.id, f'РАСХОД: название: {title}, снятие: {expense}, время и дата: {created_at}')    
 
                 if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is False:
                     bot.send_message(message.chat.id,'Категория неправильно указано. Попробуйте ещё раз')
