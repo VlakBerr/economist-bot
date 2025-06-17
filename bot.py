@@ -87,11 +87,12 @@ def register_finish(message):
             bot.send_message(message.chat.id, f'Пользователь {username} успешно зарегистрирован')
         else:
             bot.send_message(message.chat.id,'Этот username уже занят. Попробуйте ещё раз')
-            bot.register_next_step_handler(message, register_start)
-
+            register_start(message)
+            return
     else:
         bot.send_message(message.chat.id,'Вы допустили больше одного пробела или не поставили его. Попробуйте ещё раз')
-        bot.register_next_step_handler(message, register_start)
+        register_start(message)
+        return
 
 '''
 Функция login
@@ -113,13 +114,15 @@ def login_finish(message):
         username, password = message_txt.split(' ')
         if Database.login(username, password) is False:
             bot.send_message(message.chat.id,'Неправильный username или пароль. Попробуйте ещё раз')
-            bot.register_next_step_handler(message, login_start)
+            login_start(message)
+            return
         else:
             USER_ID = Database.login(username, password)
             bot.send_message(message.chat.id,f'Вы успешно вошли! Здравствуйте, {username}')
     else:
         bot.send_message(message.chat.id,'Вы допустили больше одного пробела или не поставили его. Попробуйте ещё раз')
-        bot.register_next_step_handler(message, login_start)
+        login_start(message)
+        return
 
 '''
 Функция set_goal
@@ -142,21 +145,25 @@ def set_goal_finish(message):
             title, money_count = message_txt.split(' ')
             if money_count.isdigit() is False:
                 bot.send_message(message.chat.id,'Вы не ввели сумму. Попробуйте ещё раз')
-                bot.register_next_step_handler(message, set_goal_start)
+                set_goal_start(message)
+                return
             else:
                 if Database.check_goal_in_table_by_id(USER_ID, title) is True:
                     Database.set_goal(USER_ID, title, money_count)
                     bot.send_message(message.chat.id,'Новая цель успешно установлена')
                 else:
                     bot.send_message(message.chat.id,'Такая цель уже есть. Попробуйте ещё раз')
-                    bot.register_next_step_handler(message, set_goal_start)
+                    set_goal_start(message)
+                    return
         else:
             bot.send_message(message.chat.id,'Вы допустили больше одного пробела или не поставили его. Попробуйте ещё раз')
-            bot.register_next_step_handler(message, set_goal_start)
+            set_goal_start(message)
+            return
 
     else:
         bot.send_message(message.chat.id,'Вы не вошли в аккаунт. Войдите и попробуйте ещё раз')
-        bot.register_next_step_handler(message, login_start)
+        login_start(message)
+        return
 
 '''
 Функция add_income
@@ -179,7 +186,8 @@ def add_income_finish(message):
             title, income = message_txt.split(' ')
             if income.isdigit() is False:
                 bot.send_message(message.chat.id,'Вы не ввели сумму. Попробуйте ещё раз')
-                bot.register_next_step_handler(message, add_income_start)
+                add_income_start(message)
+                return
             else:
                 if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is True:
                     price_after, save = None, None
@@ -191,15 +199,18 @@ def add_income_finish(message):
 
                 if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is False:
                     bot.send_message(message.chat.id,'Категория неправильно указано. Попробуйте ещё раз')
-                    bot.register_next_step_handler(message, add_income_start)
+                    add_income_start(message)
+                    return
 
         else:
             bot.send_message(message.chat.id,'Вы допустили больше одного пробела или не поставили его. Попробуйте ещё раз')
-            bot.register_next_step_handler(message, add_income_start)
+            add_income_start(message)
+            return
 
     else:
         bot.send_message(message.chat.id,'Вы не вошли в аккаунт. Войдите и попробуйте ещё раз')
-        bot.register_next_step_handler(message, login_start)
+        login_start(message)
+        return
 
 '''
 Функция add_expense
@@ -222,7 +233,8 @@ def add_expense_finish(message):
             title, expense = message_txt.split(' ')
             if expense.isdigit() is False:
                 bot.send_message(message.chat.id,'Вы не ввели сумму. Попробуйте ещё раз')
-                bot.register_next_step_handler(message, add_expense_start)
+                add_expense_start(message)
+                return
         
             if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is True:
                 price_after, save = Database.add_expense(USER_ID, title, int(expense))
@@ -230,15 +242,18 @@ def add_expense_finish(message):
 
             if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is False:
                 bot.send_message(message.chat.id,'Категория неправильно указано. Попробуйте ещё раз')
-                bot.register_next_step_handler(message, add_expense_start)
+                add_expense_start(message)
+                return
         
         else:
             bot.send_message(message.chat.id,'Вы допустили больше одного пробела или не поставили его. Попробуйте ещё раз')
-            bot.register_next_step_handler(message, add_expense_start)
+            add_expense_start(message)
+            return
 
     else:
         bot.send_message(message.chat.id,'Вы не вошли в аккаунт. Войдите и попробуйте ещё раз')
-        bot.register_next_step_handler(message, login_start)
+        login_start(message)
+        return
 
 '''
 Функция view_transactions
@@ -296,15 +311,18 @@ def view_transactions_finish(message):
 
                 if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is False:
                     bot.send_message(message.chat.id,'Категория неправильно указано. Попробуйте ещё раз')
-                    bot.register_next_step_handler(message, view_transactions_start)
+                    view_transactions_start(message)
+                    return
         
         else:
             bot.send_message(message.chat.id,'Нужно ввсети только одно слово. Попробуйте ещё раз')
-            bot.register_next_step_handler(message, view_transactions_start)
+            view_transactions_start(message)
+            return
 
     else:
         bot.send_message(message.chat.id,'Вы не вошли в аккаунт. Войдите и попробуйте ещё раз')
-        bot.register_next_step_handler(message, login_start)
+        login_start(message)
+        return
 
 '''
 Функция statistics
@@ -361,12 +379,15 @@ def statistics_finish(message):
 
                 if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is False:
                     bot.send_message(message.chat.id,'Категория неправильно указано. Попробуйте ещё раз')
-                    bot.register_next_step_handler(message, statistics_start)
+                    statistics_start(message)
+                    return
 
         else:
             bot.send_message(message.chat.id,'Нужно ввсети только одно слово. Попробуйте ещё раз')
-            bot.register_next_step_handler(message, statistics_start)
+            statistics_start(message)
+            return
 
     else:
         bot.send_message(message.chat.id,'Вы не вошли в аккаунт. Войдите и попробуйте ещё раз')
-        bot.register_next_step_handler(message, login_start)
+        login_start(message)
+        return
