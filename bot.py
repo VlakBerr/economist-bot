@@ -9,6 +9,12 @@ bot = telebot.TeleBot(config.token)
 
 USER_ID = None
 
+@bot.message_handler(func=lambda message: message.text == "Домой"  or message.text == "Назад")
+def return_to_help(message):
+    bot.send_message(message.chat.id, "Вы ввели команду вернуться в функцию help")
+    help(message)
+    return
+
 '''
 Функция start
 '''
@@ -78,6 +84,10 @@ def register_start(message):
     bot.register_next_step_handler(message, register_finish)
     
 def register_finish(message):
+    if message.text in ["Домой", "Назад"]:
+        return_to_help(message)
+        return
+
     message_txt = message.text
     
     if message_txt.count(' ') == 1:
@@ -108,6 +118,10 @@ def login_start(message):
 def login_finish(message):
     global USER_ID
 
+    if message.text in ["Домой", "Назад"]:
+        return_to_help(message)
+        return
+
     message_txt = message.text
     
     if message_txt.count(' ') == 1:
@@ -137,6 +151,10 @@ def set_goal_start(message):
     
 def set_goal_finish(message):
     global USER_ID
+
+    if message.text in ["Домой", "Назад"]:
+        return_to_help(message)
+        return
     
     if USER_ID is not None:
         message_txt = message.text
@@ -178,6 +196,10 @@ def add_income_start(message):
     
 def add_income_finish(message):
     global USER_ID
+
+    if message.text in ["Домой", "Назад"]:
+        return_to_help(message)
+        return
     
     if USER_ID is not None:
         message_txt = message.text
@@ -225,6 +247,10 @@ def add_expense_start(message):
     
 def add_expense_finish(message):
     global USER_ID
+
+    if message.text in ["Домой", "Назад"]:
+        return_to_help(message)
+        return
     
     if USER_ID is not None:
         message_txt = message.text
@@ -268,6 +294,10 @@ def view_transactions_start(message):
     
 def view_transactions_finish(message):
     global USER_ID
+
+    if message.text in ["Домой", "Назад"]:
+        return_to_help(message)
+        return
     
     if USER_ID is not None:
         message_txt = message.text
@@ -337,6 +367,10 @@ def statistics_start(message):
     
 def statistics_finish(message):
     global USER_ID
+
+    if message.text in ["Домой", "Назад"]:
+        return_to_help(message)
+        return
     
     if USER_ID is not None:
         message_txt = message.text
