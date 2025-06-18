@@ -119,6 +119,24 @@ class Database:
         return True
 
     @staticmethod
+    def get_all_goals():
+        connection = sqlite3.connect(Database.DB)
+
+        cursor = connection.cursor()
+
+        cursor.execute("SELECT * FROM goals")
+
+        all_goals = cursor.fetchall()
+        goals = []
+
+        for user_id, title, money_count, savings in all_goals:
+            goal = Goal(user_id, title, money_count, savings)
+            goals.append(goal)
+        if len(goals) == 0:
+            return None
+        return goals
+
+    @staticmethod
     def add_income(user_id, title, income):
         Database.execute('INSERT INTO incomes (user_id, title, income) VALUES (?, ?, ?)', 
         [user_id, title, income])

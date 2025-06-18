@@ -146,6 +146,17 @@ def set_goal_start(message):
     markup = types.ReplyKeyboardMarkup()
     set_goal_btn = types.KeyboardButton('/set_goal')
     markup.add(set_goal_btn)
+
+    message_to_user = 'Уже имеющиеся финансовые цели:'
+    goals = Database.get_all_goals()
+    for goal in goals:
+        user_id = goal.user_id
+        title = goal.title
+        money_count = goal.money_count
+        savings = goal.savings
+        message_to_user += f'\n\nЦель: {title}, необходимо накопить: {money_count}, накоплено: {savings}'
+
+    bot.send_message(message.chat.id, message_to_user)
     bot.send_message(message.chat.id,'Поставте финансовую цель: напишите название и цену через пробел')
     bot.register_next_step_handler(message, set_goal_finish)
     
@@ -433,3 +444,6 @@ def statistics_finish(message):
 @bot.message_handler(func=lambda message: True)
 def handle_all_messages(message):
     bot.send_message(message.chat.id, "Команда не распознана. Пожалуйста, используйте доступные кнопки или команды.")
+
+
+bot.infinity_polling()
