@@ -461,6 +461,3 @@ def statistics_finish(message):
 @bot.message_handler(func=lambda message: True)
 def handle_all_messages(message):
     bot.send_message(message.chat.id, "Команда не распознана. Пожалуйста, используйте доступные кнопки или команды.")
-
-
-bot.infinity_polling()
