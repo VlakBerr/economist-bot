@@ -428,3 +428,8 @@ def statistics_finish(message):
         bot.send_message(message.chat.id,'Вы не вошли в аккаунт. Войдите и попробуйте ещё раз')
         login_start(message)
         return
+
+
+@bot.message_handler(func=lambda message: True)
+def handle_all_messages(message):
+    bot.send_message(message.chat.id, "Команда не распознана. Пожалуйста, используйте доступные кнопки или команды.")
