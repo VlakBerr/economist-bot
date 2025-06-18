@@ -149,14 +149,17 @@ def set_goal_start(message):
 
     message_to_user = 'Уже имеющиеся финансовые цели:'
     goals = Database.get_all_goals()
-    for goal in goals:
-        user_id = goal.user_id
-        title = goal.title
-        money_count = goal.money_count
-        savings = goal.savings
-        message_to_user += f'\n\nЦель: {title}, необходимо накопить: {money_count}, накоплено: {savings}'
+    if goals is not None:
+        for goal in goals:
+            user_id = goal.user_id
+            title = goal.title
+            money_count = goal.money_count
+            savings = goal.savings
+            message_to_user += f'\n\nЦель: {title}, необходимо накопить: {money_count}, накоплено: {savings}'
 
-    bot.send_message(message.chat.id, message_to_user)
+        bot.send_message(message.chat.id, message_to_user)
+    else:
+        bot.send_message(message.chat.id,'У вас ещё нет финансовых целей')
     bot.send_message(message.chat.id,'Поставте финансовую цель: напишите название и цену через пробел')
     bot.register_next_step_handler(message, set_goal_finish)
     
