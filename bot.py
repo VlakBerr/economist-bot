@@ -322,16 +322,25 @@ def view_transactions_finish(message):
                 if incomes is None:
                     bot.send_message(message.chat.id, f'У вас доходов нет')
                 else:
+                    message_to_user = 'Ваши доходы:'
+
                     for income in incomes:
                         user_id, title, income, created_at = income
-                        bot.send_message(message.chat.id, f'ДОХОД: название: {title}, внесение: {income}, время и дата: {created_at}')
+                        message_to_user += f'\n\nКатегория: {title}, внесение: {income}, время и дата: {created_at}'
+                        
+                    bot.send_message(message.chat.id, message_to_user)
                 
                 if expenses is None:
-                    bot.send_message(message.chat.id, f'У вас росходов нет')
+                    bot.send_message(message.chat.id, f'У вас расходов нет')
                 else:
+                    message_to_user = 'Ваши расходы:'
+
                     for expense in expenses:
                         user_id, title, expense, created_at = expense
-                        bot.send_message(message.chat.id, f'РАСХОД: название: {title}, снятие: {expense}, время и дата: {created_at}')    
+                        message_to_user += f'\n\nКатегория: {title}, снятие: {expense}, время и дата: {created_at}'
+                    
+                    bot.send_message(message.chat.id, message_to_user)
+
             else:
                 if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is True:
                     incomes = Database.view_transactions_incomes(USER_ID, title)
@@ -339,17 +348,25 @@ def view_transactions_finish(message):
                     if incomes is None:
                         bot.send_message(message.chat.id, f'Доходов на эту категорию нет')
                     else:
+                        message_to_user = 'Ваши доходы:'
+
                         for income in incomes:
                             user_id, title, income, created_at = income
-                            bot.send_message(message.chat.id, f'ДОХОД: название: {title}, внесение: {income}, время и дата: {created_at}')
+                            message_to_user += f'\n\nКатегория: {title}, внесение: {income}, время и дата: {created_at}'
+
+                        bot.send_message(message.chat.id, message_to_user)
 
                     if expenses is None:
                         bot.send_message(message.chat.id, f'Расходов на эту категорию нет')
                     else:
+                        message_to_user = 'Ваши расходы:'
+
                         for expense in expenses:
                             user_id, title, expense, created_at = expense
-                            bot.send_message(message.chat.id, f'РАСХОД: название: {title}, снятие: {expense}, время и дата: {created_at}')    
+                            message_to_user += f'\n\nКатегория: {title}, снятие: {expense}, время и дата: {created_at}'
 
+                        bot.send_message(message.chat.id, message_to_user)
+                        
                 if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is False:
                     bot.send_message(message.chat.id,'Категория неправильно указано. Попробуйте ещё раз')
                     view_transactions_start(message)
