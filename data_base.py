@@ -176,7 +176,10 @@ class Database:
         money_count = int(cursor.fetchall()[0][0])
 
         price_after = price_before - expense 
-        Database.execute('UPDATE goals SET savings = ? WHERE title = ? AND user_id = ? ', [str(price_after), title, user_id])
+        if price_after < 0:
+            Database.execute('UPDATE goals SET savings = ? WHERE title = ? AND user_id = ? ', ['0', title, user_id])
+        else:
+            Database.execute('UPDATE goals SET savings = ? WHERE title = ? AND user_id = ? ', [str(price_after), title, user_id])
 
         return price_after, money_count - price_after
 

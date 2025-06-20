@@ -307,7 +307,11 @@ def add_expense_finish(message):
             else:
                 if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is True:
                     price_after, save = Database.add_expense(USER_ID, title, expense)
-                    bot.send_message(message.chat.id,f'Вы уже внесли на цель {price_after} с учётом расхода. Вам осталось накопить {save}')
+                    if price_after > 0:
+                        bot.send_message(message.chat.id,f'Вы уже внесли на цель {price_after} с учётом расхода. Вам осталось накопить {save}')
+                    else:
+                        bot.send_message(message.chat.id,'Вы сняли больше, чем было накоплено. Я обнуляю ваш счёт')
+
                 if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is False:
                     bot.send_message(message.chat.id,'Категория неправильно указано. Попробуйте ещё раз')
                     add_expense_start(message)
