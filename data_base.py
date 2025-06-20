@@ -141,6 +141,7 @@ class Database:
         Database.execute('INSERT INTO incomes (user_id, title, income) VALUES (?, ?, ?)', 
         [user_id, title, income])
         
+        income = int(income)
         connection = sqlite3.connect(Database.DB)
         cursor = connection.cursor()
         cursor.execute('SELECT savings FROM goals WHERE title = ?', [title])        
@@ -149,7 +150,7 @@ class Database:
         money_count = int(cursor.fetchall()[0][0])
 
         price_after = price_before + income 
-        Database.execute('UPDATE goals SET savings = ? WHERE title = ? ', [price_after, title])
+        Database.execute('UPDATE goals SET savings = ? WHERE title = ? AND user_id = ?', [str(price_after), title, user_id])
 
         if price_after >= money_count:
             return None, price_after - money_count 
@@ -161,6 +162,7 @@ class Database:
         Database.execute('INSERT INTO expenses (user_id, title, expense) VALUES (?, ?, ?)', 
         [user_id, title, expense])
         
+        expense = int(expense)
         connection = sqlite3.connect(Database.DB)
         cursor = connection.cursor()
         cursor.execute('SELECT savings FROM goals WHERE title = ?', [title])        
@@ -169,7 +171,7 @@ class Database:
         money_count = int(cursor.fetchall()[0][0])
 
         price_after = price_before - expense 
-        Database.execute('UPDATE goals SET savings = ? WHERE title = ? AND user_id = ? ', [price_after, title, user_id])
+        Database.execute('UPDATE goals SET savings = ? WHERE title = ? AND user_id = ? ', [str(price_after), title, user_id])
 
         return price_after, money_count - price_after
 

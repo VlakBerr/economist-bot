@@ -227,17 +227,15 @@ def add_income_finish(message):
             else:
                 if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is True:
                     price_after, save = None, None
-                    price_after, save = Database.add_income(USER_ID, title, int(income))
+                    price_after, save = Database.add_income(USER_ID, title, income)
                     if price_after is None or save is None:
                         bot.send_message(message.chat.id,f'Поздравляю! Вы накопили на свою цель!!! Вы внесли сверх {save}')
                     else:
                         bot.send_message(message.chat.id,f'Молодцы! Вы внесли уже {price_after}. Вам осталось накопить {save}')
-
                 if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is False:
                     bot.send_message(message.chat.id,'Категория неправильно указано. Попробуйте ещё раз')
                     add_income_start(message)
                     return
-
         else:
             bot.send_message(message.chat.id,'Вы допустили больше одного пробела или не поставили его. Попробуйте ещё раз')
             add_income_start(message)
@@ -275,16 +273,15 @@ def add_expense_finish(message):
                 bot.send_message(message.chat.id,'Вы не ввели сумму. Попробуйте ещё раз')
                 add_expense_start(message)
                 return
-        
-            if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is True:
-                price_after, save = Database.add_expense(USER_ID, title, int(expense))
-                bot.send_message(message.chat.id,f'Вы уже внесли на цель {price_after} с учётом расхода. Вам осталось накопить {save}')
+            else:
+                if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is True:
+                    price_after, save = Database.add_expense(USER_ID, title, expense)
+                    bot.send_message(message.chat.id,f'Вы уже внесли на цель {price_after} с учётом расхода. Вам осталось накопить {save}')
+                if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is False:
+                    bot.send_message(message.chat.id,'Категория неправильно указано. Попробуйте ещё раз')
+                    add_expense_start(message)
+                    return
 
-            if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is False:
-                bot.send_message(message.chat.id,'Категория неправильно указано. Попробуйте ещё раз')
-                add_expense_start(message)
-                return
-        
         else:
             bot.send_message(message.chat.id,'Вы допустили больше одного пробела или не поставили его. Попробуйте ещё раз')
             add_expense_start(message)
