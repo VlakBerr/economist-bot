@@ -143,12 +143,14 @@ def login_finish(message):
 '''
 @bot.message_handler(commands=['set_goal'])
 def set_goal_start(message):
+    global USER_ID
+
     markup = types.ReplyKeyboardMarkup()
     set_goal_btn = types.KeyboardButton('/set_goal')
     markup.add(set_goal_btn)
 
     message_to_user = 'Уже имеющиеся финансовые цели:'
-    goals = Database.get_all_goals()
+    goals = Database.get_all_goals(USER_ID)
     if goals is not None:
         for goal in goals:
             user_id = goal.user_id
@@ -230,6 +232,8 @@ def add_income_finish(message):
                     price_after, save = Database.add_income(USER_ID, title, income)
                     if price_after is None or save is None:
                         bot.send_message(message.chat.id,f'Поздравляю! Вы накопили на свою цель!!! Вы внесли сверх {save}')
+                        bot.send_message(message.chat.id,f'Вы желаете удалить эту цель? Напишите "Да" или "Нет"')
+                        bot.register_next_step_handler(message, lambda msg: add_income_delete_goal(msg, title))
                     else:
                         bot.send_message(message.chat.id,f'Молодцы! Вы внесли уже {price_after}. Вам осталось накопить {save}')
                 if Database.find_title_in_tables_goal_with_user_id(USER_ID, title) is False:
@@ -239,6 +243,33 @@ def add_income_finish(message):
         else:
             bot.send_message(message.chat.id,'Вы допустили больше одного пробела или не поставили его. Попробуйте ещё раз')
             add_income_start(message)
+            return
+
+    else:
+        bot.send_message(message.chat.id,'Вы не вошли в аккаунт. Войдите и попробуйте ещё раз')
+        login_start(message)
+        return
+
+def add_income_delete_goal(message, title):
+    global USER_ID
+
+    if message.text in ["Домой", "Назад"]:
+        return_to_help(message)
+        return
+    
+    if USER_ID is not None:
+        answer = message.text.strip().lower()
+
+        if answer == 'да':
+            Database.delete_completed_goal(USER_ID, title)
+            bot.send_message(message.chat.id, 'Цель удалена')
+            return
+        if answer == 'нет':
+            bot.send_message(message.chat.id,'Хорошо, я оставлю эту финансовую цель')
+            return
+        else:
+            bot.send_message(message.chat.id,'Вам нужно ввести только одно слово: "Да" или "Нет". Попробуйте ещё раз')
+            bot.register_next_step_handler(message, lambda msg: add_income_delete_goal(msg, title))
             return
 
     else:

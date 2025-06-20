@@ -119,12 +119,12 @@ class Database:
         return True
 
     @staticmethod
-    def get_all_goals():
+    def get_all_goals(user_id):
         connection = sqlite3.connect(Database.DB)
 
         cursor = connection.cursor()
 
-        cursor.execute("SELECT * FROM goals")
+        cursor.execute("SELECT * FROM goals WHERE user_id = ?", [user_id])
 
         all_goals = cursor.fetchall()
         goals = []
@@ -137,6 +137,11 @@ class Database:
         return goals
 
     @staticmethod
+    def delete_completed_goal(user_id, title):
+        Database.execute('DELETE FROM goals WHERE user_id = ? AND title = ?', [user_id, title])
+        return True
+
+    @staticmethod
     def add_income(user_id, title, income):
         Database.execute('INSERT INTO incomes (user_id, title, income) VALUES (?, ?, ?)', 
         [user_id, title, income])
@@ -144,9 +149,9 @@ class Database:
         income = int(income)
         connection = sqlite3.connect(Database.DB)
         cursor = connection.cursor()
-        cursor.execute('SELECT savings FROM goals WHERE title = ?', [title])        
+        cursor.execute('SELECT savings FROM goals WHERE title = ? AND user_id = ?', [title, user_id])        
         price_before = int(cursor.fetchall()[0][0])
-        cursor.execute('SELECT money_count FROM goals WHERE title = ?', [title])        
+        cursor.execute('SELECT money_count FROM goals WHERE title = ? AND user_id = ?', [title, user_id])        
         money_count = int(cursor.fetchall()[0][0])
 
         price_after = price_before + income 
@@ -165,9 +170,9 @@ class Database:
         expense = int(expense)
         connection = sqlite3.connect(Database.DB)
         cursor = connection.cursor()
-        cursor.execute('SELECT savings FROM goals WHERE title = ?', [title])        
+        cursor.execute('SELECT savings FROM goals WHERE title = ? AND user_id = ?', [title, user_id])        
         price_before = int(cursor.fetchall()[0][0])
-        cursor.execute('SELECT money_count FROM goals WHERE title = ?', [title])        
+        cursor.execute('SELECT money_count FROM goals WHERE title = ? AND user_id = ?', [title, user_id])        
         money_count = int(cursor.fetchall()[0][0])
 
         price_after = price_before - expense 
