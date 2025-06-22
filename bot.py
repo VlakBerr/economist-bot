@@ -684,3 +684,6 @@ def handle_all_messages(message):
         message.chat.id,
         "Команда не распознана. Пожалуйста, используйте доступные кнопки или команды.",
     )
+
+
+bot.infinity_polling()
