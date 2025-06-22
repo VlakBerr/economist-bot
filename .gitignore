@@ -2,3 +2,13 @@ config.py
 __pycache__
 database.db
 download_graficks
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
