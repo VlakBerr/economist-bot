@@ -1,13 +1,21 @@
+import pathlib
+
 import telebot
 from telebot import types
+from dotenv import load_dotenv
 
 import config
 from data_base import Database
+
+load_dotenv()
 
 Database.create_table()
 bot = telebot.TeleBot(config.token)
 
 USER_ID = None
+
+pathlib.Path("./database.db").touch()
+pathlib.Path("./download_graficks").mkdir()
 
 
 @bot.message_handler(
