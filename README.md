@@ -44,32 +44,17 @@
 
 2. Установите необходимые библиотеки:
     ```bash
-    pip install pyTelegramBotAPI
-    pip install matplotlib
+    uv sync
     ```
 
-3. Создайте следующие файлы в корневой директории проекта:
-    - `config.py`
-    - `database.db`
-
-4. Создайте папку `download_graficks` в корневой директории проекта:
+3. В файле `.env` задайте значение переменной `TELEGRAM_BOT_TOKEN`
     ```bash
-    mkdir download_graficks
+    TELEGRAM_BOT_TOKEN = 'YOUR_TELEGRAM_BOT_TOKEN'
     ```
 
-5. В файле `config.py` создайте переменную `token` и присвойте ей токен вашего Telegram-бота. Например:
-    ```python
-    token = 'YOUR_TELEGRAM_BOT_TOKEN'
-    ```
-
-6. В файле `bot.py` добавьте в конце строку:
-    ```python
-    bot.infinity_polling()
-    ```
-
-7. Запустите бота командой:
+4. Запустите бота командой:
     ```bash
-    python bot.py
+    uv run bot.py
     ```
 
 После выполнения этих шагов бот будет готов к работе и вы сможете использовать Telegram-бота для управления личными финансами.
