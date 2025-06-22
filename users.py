@@ -7,6 +7,7 @@ class User:
     username: str
     password: str
 
+
 @dataclass
 class Income:
     user_id: int
@@ -14,12 +15,14 @@ class Income:
     title: str
     created_at: str
 
+
 @dataclass
 class Expense:
     user_id: int
     expense: str
     title: str
     created_at: str
+
 
 @dataclass
 class Goal:
